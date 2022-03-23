@@ -1,0 +1,22 @@
+<idea-plugin>
+    <id>org.sk.Director</id>
+    <name>TODO</name>
+    <vendor email="todo" url="todo">todo</vendor>
+
+    <description>todo....................................</description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends>org.jetbrains.kotlin</depends>
+    <depends>org.jetbrains.android</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <codeInsight.lineMarkerProvider
+                implementationClass="com.sk.director.FKChildNavigationMarkerProvider"
+                language="kotlin"/>
+        <codeInsight.lineMarkerProvider
+                implementationClass="com.sk.director.FKParentNavigationMarkerProvider"
+                language="kotlin"/>
+    </extensions>
+
+</idea-plugin>

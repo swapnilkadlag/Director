@@ -1,0 +1,34 @@
+plugins {
+    id 'org.jetbrains.intellij' version '1.4.0'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.10'
+    id 'java'
+}
+
+group 'org.sk'
+version '0.0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly "org.jetbrains.kotlin:kotlin-compiler:1.6.10"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.6.10"
+}
+
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+intellij {
+    version = '2021.1.1'
+    plugins = ['android']
+}
+patchPluginXml {
+    changeNotes = """
+      Add change notes here.<br>
+      <em>most HTML tags may be used</em>"""
+}
+runIde {
+    ideDir = file('C:\\Program Files\\Android\\Android Studio')
+}
+test {
+    useJUnitPlatform()
+}
