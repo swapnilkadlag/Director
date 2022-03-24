@@ -1,16 +1,12 @@
 package com.sk.director
 
-import com.android.tools.idea.kotlin.findValueArgument
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
-import com.intellij.openapi.util.IconLoader
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PsiShortNamesCache
 import org.jetbrains.kotlin.asJava.classes.KtUltraLightClass
-import org.jetbrains.kotlin.idea.util.findAnnotation
-import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.*
 
 class FKChildNavigationMarkerProvider : RelatedItemLineMarkerProvider() {
@@ -23,22 +19,20 @@ class FKChildNavigationMarkerProvider : RelatedItemLineMarkerProvider() {
             val psiShortNamesCache = PsiShortNamesCache.getInstance(project)
             val foreignKeyData = element.getForeignKeyData()
             val valueParameters = element.getValueParameters()
-
-            val parentClasses = foreignKeyData.map { fk -> fk.entityClass }
-            val parentClassElements = parentClasses.flatMap {
-                psiShortNamesCache.getClassesByName(it, GlobalSearchScope.allScope(project)).asList()
-            }.filterIsInstance<KtUltraLightClass>()
-
-            valueParameters.forEach { p ->
-                foreignKeyData.forEach {
-                    if (it.childColumnName.contains(p.name)) {
-                        val cls =
-                            parentClassElements.first { x -> x.name == it.entityClass }
-                        val graphLineMarker = NavigationGutterIconBuilder.create(PARENT_ICON)
-                            .setTarget(cls)
-                            .setTooltipText("Navigate to Simple language property")
-                            .createLineMarkerInfo(p)
-                        graphLineMarker.let { result.add(graphLineMarker) }
+            valueParameters.forEach { param ->
+                foreignKeyData.forEach { foreignKey ->
+                    val childParamIndex = foreignKey.childColumns.indexOfFirst { x -> x == param.name }
+                    val parentClass = foreignKey.targetClass as? KtClass
+                    if (childParamIndex != -1 && parentClass != null) {
+                        val classParams = parentClass.getValueParameters()
+                        val parentParam = classParams.find { x -> x.name == foreignKey.parentColumns[childParamIndex] }
+                        val graphLineMarker = param.valOrVarKeyword?.let { it1 ->
+                            NavigationGutterIconBuilder.create(PARENT_ICON)
+                                .setTarget(parentParam)
+                                .setTooltipText("Navigate to foreign keys")
+                                .createLineMarkerInfo(it1)
+                        }
+                        graphLineMarker?.let { m -> result.add(m) }
                     }
                 }
             }
