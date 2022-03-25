@@ -1,5 +1,6 @@
 package com.sk.director
 
+import com.android.annotations.concurrency.WorkerThread
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
@@ -10,6 +11,8 @@ import org.jetbrains.kotlin.asJava.classes.KtUltraLightClass
 import org.jetbrains.kotlin.psi.*
 
 class FKChildNavigationMarkerProvider : RelatedItemLineMarkerProvider() {
+
+    @WorkerThread
     override fun collectNavigationMarkers(
         element: PsiElement,
         result: MutableCollection<in RelatedItemLineMarkerInfo<*>>
@@ -17,6 +20,7 @@ class FKChildNavigationMarkerProvider : RelatedItemLineMarkerProvider() {
         if (element is KtClass && element.isEntityClass()) {
             val project = element.project
             val psiShortNamesCache = PsiShortNamesCache.getInstance(project)
+
             val foreignKeyData = element.getForeignKeyData()
             val valueParameters = element.getValueParameters()
             valueParameters.forEach { param ->

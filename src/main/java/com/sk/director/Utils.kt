@@ -1,14 +1,12 @@
 package com.sk.director
 
 import com.android.tools.idea.kotlin.findValueArgument
-import com.intellij.openapi.util.IconLoader
 import com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.idea.references.KtSimpleNameReference
 import org.jetbrains.kotlin.idea.util.findAnnotation
 import org.jetbrains.kotlin.name.FqName
-import org.jetbrains.kotlin.nj2k.postProcessing.resolve
 import org.jetbrains.kotlin.psi.*
-import org.jetbrains.kotlin.psi.psiUtil.referenceExpression
-import org.jetbrains.plugins.groovy.lang.psi.util.childrenOfType
+import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstanceOrNull
 
 inline fun <reified T : PsiElement> PsiElement.findChildOfType(): T? {
     return children.filterIsInstance<T>().firstOrNull()
@@ -75,12 +73,8 @@ fun KtClass.getForeignKeyData(): List<ForeignKey> {
         val entityParameter = fka.valueArgumentList?.findValueArgument(ENTITY) ?: return emptyList()
         val entityValue = entityParameter.findChildOfType<KtClassLiteralExpression>() ?: return emptyList()
         val entityName = entityValue.findChildOfType<KtNameReferenceExpression>()?.text ?: return emptyList()
-        ForeignKey(
-            entityName,
-            parentColumnNames,
-            childColumnNames,
-            entityValue.children.first().references.first()?.resolve()
-        )
+        val targetClass = entityValue.children.first().references.firstIsInstanceOrNull<KtSimpleNameReference>()?.resolve()
+        ForeignKey(entityName, parentColumnNames, childColumnNames, targetClass)
     }
     return res
 }

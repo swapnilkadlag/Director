@@ -1,5 +1,6 @@
 package com.sk.director
 
+import com.android.annotations.concurrency.WorkerThread
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
@@ -11,6 +12,7 @@ import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 
 class FKParentNavigationMarkerProvider : RelatedItemLineMarkerProvider() {
 
+    @WorkerThread
     override fun collectNavigationMarkers(
         element: PsiElement,
         result: MutableCollection<in RelatedItemLineMarkerInfo<*>>
