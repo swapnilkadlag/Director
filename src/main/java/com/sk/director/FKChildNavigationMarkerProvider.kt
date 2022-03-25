@@ -18,9 +18,6 @@ class FKChildNavigationMarkerProvider : RelatedItemLineMarkerProvider() {
         result: MutableCollection<in RelatedItemLineMarkerInfo<*>>
     ) {
         if (element is KtClass && element.isEntityClass()) {
-            val project = element.project
-            val psiShortNamesCache = PsiShortNamesCache.getInstance(project)
-
             val foreignKeyData = element.getForeignKeyData()
             val valueParameters = element.getValueParameters()
             valueParameters.forEach { param ->
@@ -33,7 +30,7 @@ class FKChildNavigationMarkerProvider : RelatedItemLineMarkerProvider() {
                         val graphLineMarker = param.valOrVarKeyword?.let { it1 ->
                             NavigationGutterIconBuilder.create(PARENT_ICON)
                                 .setTarget(parentParam)
-                                .setTooltipText("Navigate to foreign keys")
+                                .setTooltipText("Navigate to parent key")
                                 .createLineMarkerInfo(it1)
                         }
                         graphLineMarker?.let { m -> result.add(m) }

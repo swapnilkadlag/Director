@@ -63,7 +63,7 @@ fun KtClass.getForeignKeyData(): List<ForeignKey> {
     val foreignKeyParameter = entityAnnotation.findValueArgument(FOREIGN_KEYS) ?: return emptyList()
     val foreignKeyValue = foreignKeyParameter.getCollectionLiteralExpression() ?: return emptyList()
     val foreignKeyAnnotations = foreignKeyValue.getCallExpressions()
-    val res = foreignKeyAnnotations.mapNotNull { fka ->
+    val res = foreignKeyAnnotations.map { fka ->
         val childColumnParameter = fka.valueArgumentList?.findValueArgument(CHILD_COLUMNS) ?: return emptyList()
         val childColumnValue = childColumnParameter.getCollectionLiteralExpression() ?: return emptyList()
         val childColumnNames = childColumnValue.getStringTemplateExpressions().mapNotNull { ste -> ste.getString() }
