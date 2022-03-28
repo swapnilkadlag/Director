@@ -4,46 +4,33 @@ import com.android.tools.idea.kotlin.findValueArgument
 import com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.idea.references.KtSimpleNameReference
 import org.jetbrains.kotlin.idea.util.findAnnotation
-import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.psiUtil.getChildOfType
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstanceOrNull
+import org.jetbrains.plugins.groovy.lang.psi.util.childrenOfType
 
-inline fun <reified T : PsiElement> PsiElement.findChildOfType(): T? {
-    return children.filterIsInstance<T>().firstOrNull()
+
+fun KtClass.getEntityAnnotation(): KtAnnotationEntry? {
+    return findAnnotation(Annotations.EntityFQName)
 }
 
-inline fun <reified T : PsiElement> PsiElement.getChildOfType(): T {
-    return children.filterIsInstance<T>().first()
+fun KtAnnotationEntry.getForeignKeyArgument(): KtValueArgument? {
+    return findValueArgument(Parameters.ForeignKeys)
 }
 
-inline fun <reified T : PsiElement> PsiElement.getChildrenOfType(): List<T> {
-    return children.filterIsInstance<T>()
+fun KtStringTemplateExpression.getString(): String? {
+    return entries.firstOrNull()?.text
 }
 
-fun KtClass.getValueParameters(): List<KtParameter> {
-    val constructor = primaryConstructor ?: return emptyList()
-    val constructorParameters = constructor.valueParameterList ?: return emptyList()
-    return constructorParameters.parameters
+fun KtValueArgument.getStringList(): List<String>? {
+    val collectionExpression = getChildOfType<KtCollectionLiteralExpression>()
+    val stringTemplates = collectionExpression?.childrenOfType<KtStringTemplateExpression>()
+    return stringTemplates?.mapNotNull { it.getString() }
 }
 
-fun KtClass.isEntityClass(): Boolean {
-    return findAnnotation(FqName(ENTITY_ANNOTATION)) != null
-}
-
-fun KtClass.getEntityAnnotationEntry(): KtAnnotationEntry {
-    return findAnnotation(FqName(ENTITY_ANNOTATION)) ?: throw IllegalStateException()
-}
-
-fun KtValueArgument.getCollectionLiteralExpression(): KtCollectionLiteralExpression? {
-    return findChildOfType()
-}
-
-fun KtCollectionLiteralExpression.getCallExpressions(): List<KtCallExpression> {
-    return getChildrenOfType()
-}
-
-fun KtCollectionLiteralExpression.getStringTemplateExpressions(): List<KtStringTemplateExpression> {
-    return children.filterIsInstance<KtStringTemplateExpression>()
+fun KtClass.getConstructorParameters(): List<KtParameter>? {
+    val constructorParameters = primaryConstructor?.valueParameterList
+    return constructorParameters?.parameters
 }
 
 fun KtValueArgumentList.findValueArgument(argumentName: String): KtValueArgument? {
@@ -54,27 +41,47 @@ fun KtValueArgument.isOfName(name: String): Boolean {
     return getArgumentName()?.asName.toString() == name
 }
 
-fun KtStringTemplateExpression.getString(): String? {
-    return entries.firstOrNull()?.text
+fun KtClassLiteralExpression.getReferencedClass(): KtClass? {
+    val classReference = getChildOfType<KtNameReferenceExpression>()
+    return classReference?.references?.firstIsInstanceOrNull<KtSimpleNameReference>()?.resolve() as? KtClass
 }
 
-fun KtClass.getForeignKeyData(): List<ForeignKey> {
-    val entityAnnotation = this.getEntityAnnotationEntry()
-    val foreignKeyParameter = entityAnnotation.findValueArgument(FOREIGN_KEYS) ?: return emptyList()
-    val foreignKeyValue = foreignKeyParameter.getCollectionLiteralExpression() ?: return emptyList()
-    val foreignKeyAnnotations = foreignKeyValue.getCallExpressions()
-    val res = foreignKeyAnnotations.map { fka ->
-        val childColumnParameter = fka.valueArgumentList?.findValueArgument(CHILD_COLUMNS) ?: return emptyList()
-        val childColumnValue = childColumnParameter.getCollectionLiteralExpression() ?: return emptyList()
-        val childColumnNames = childColumnValue.getStringTemplateExpressions().mapNotNull { ste -> ste.getString() }
-        val parentColumnParameter = fka.valueArgumentList?.findValueArgument(PARENT_COLUMNS) ?: return emptyList()
-        val parentColumnValue = parentColumnParameter.getCollectionLiteralExpression() ?: return emptyList()
-        val parentColumnNames = parentColumnValue.getStringTemplateExpressions().mapNotNull { ste -> ste.getString() }
-        val entityParameter = fka.valueArgumentList?.findValueArgument(ENTITY) ?: return emptyList()
-        val entityValue = entityParameter.findChildOfType<KtClassLiteralExpression>() ?: return emptyList()
-        val entityName = entityValue.findChildOfType<KtNameReferenceExpression>()?.text ?: return emptyList()
-        val targetClass = entityValue.children.first().references.firstIsInstanceOrNull<KtSimpleNameReference>()?.resolve()
-        ForeignKey(entityName, parentColumnNames, childColumnNames, targetClass)
-    }
-    return res
+fun KtCallExpression.getChildColumns(): List<String>? {
+    val columnsArg = valueArgumentList?.findValueArgument(Parameters.ChildColumns)
+    return columnsArg?.getStringList()
 }
+
+fun KtCallExpression.getParentColumns(): List<String>? {
+    val columnsArg = valueArgumentList?.findValueArgument(Parameters.ParentColumns)
+    return columnsArg?.getStringList()
+}
+
+fun makeMarkers(
+    sourceParams: List<KtParameter>,
+    targetParams: List<KtParameter>,
+    sourceColumnNames: List<String>,
+    targetColumnNames: List<String>
+): List<SourceTargetMarkerData<PsiElement>>? {
+    if (sourceColumnNames.size != targetColumnNames.size) return null
+    return sourceColumnNames.zip(targetColumnNames) { sourceColumnName, targetColumnName ->
+        val source = sourceParams.firstOrNull { x -> x.name == sourceColumnName }?.valOrVarKeyword ?: return@zip null
+        val targets = targetParams.filter { x -> x.name == targetColumnName }.mapNotNull { it.valOrVarKeyword }
+        SourceTargetMarkerData(source, targets)
+    }.filterNotNull()
+}
+
+
+fun makeMarkers(
+    sourceParams: List<KtParameter>,
+    targetParams: List<KtParameter>,
+    foreignKeys: List<ForeignKey>,
+): List<SourceTargetMarkerData<PsiElement>> {
+    return sourceParams.mapNotNull { param ->
+        val paramForeignKeys = foreignKeys.filter { x -> x.parentColumnName == param.name }
+        val childParams = paramForeignKeys.flatMap { x -> targetParams.filter { it.name == x.childColumnName } }
+        if (childParams.isNotEmpty() && param.valOrVarKeyword != null) {
+            SourceTargetMarkerData(param.valOrVarKeyword!!, childParams)
+        } else null
+    }
+}
+
