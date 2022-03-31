@@ -4,8 +4,6 @@ import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.psi.PsiElement
-import com.intellij.psi.search.searches.ReferencesSearch
-import com.intellij.psi.util.PsiTreeUtil
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.getChildOfType
 import org.jetbrains.plugins.groovy.lang.psi.util.childrenOfType
@@ -39,10 +37,10 @@ class ChildToParentNavigationMarkerProvider : RelatedItemLineMarkerProvider() {
             val parentEntityExpression = entityArg.getChildOfType<KtClassLiteralExpression>() ?: return@mapNotNull null
 
             val parentColumnsArg = valueArgs.findValueArgument(Parameters.ParentColumns) ?: return@mapNotNull null
-            val parentColumnNames = parentColumnsArg.getStringList() ?: return@mapNotNull null
+            val parentColumnNames = parentColumnsArg.getStrings() ?: return@mapNotNull null
 
             val childColumnsArg = valueArgs.findValueArgument(Parameters.ChildColumns) ?: return@mapNotNull null
-            val childColumnNames = childColumnsArg.getStringList() ?: return@mapNotNull null
+            val childColumnNames = childColumnsArg.getStrings() ?: return@mapNotNull null
 
             if (parentColumnNames.size != childColumnNames.size) return@mapNotNull null
 

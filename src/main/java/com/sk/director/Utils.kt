@@ -9,7 +9,6 @@ import org.jetbrains.kotlin.psi.psiUtil.getChildOfType
 import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstanceOrNull
 import org.jetbrains.plugins.groovy.lang.psi.util.childrenOfType
 
-
 fun KtClass.getEntityAnnotation(): KtAnnotationEntry? {
     return findAnnotation(Annotations.EntityFQName)
 }
@@ -22,7 +21,7 @@ fun KtStringTemplateExpression.getString(): String? {
     return entries.firstOrNull()?.text
 }
 
-fun KtValueArgument.getStringList(): List<String>? {
+fun KtValueArgument.getStrings(): List<String>? {
     val collectionExpression = getChildOfType<KtCollectionLiteralExpression>()
     val stringTemplates = collectionExpression?.childrenOfType<KtStringTemplateExpression>()
     return stringTemplates?.mapNotNull { it.getString() }
@@ -48,12 +47,12 @@ fun KtClassLiteralExpression.getReferencedClass(): KtClass? {
 
 fun KtCallExpression.getChildColumns(): List<String>? {
     val columnsArg = valueArgumentList?.findValueArgument(Parameters.ChildColumns)
-    return columnsArg?.getStringList()
+    return columnsArg?.getStrings()
 }
 
 fun KtCallExpression.getParentColumns(): List<String>? {
     val columnsArg = valueArgumentList?.findValueArgument(Parameters.ParentColumns)
-    return columnsArg?.getStringList()
+    return columnsArg?.getStrings()
 }
 
 fun makeMarkers(
