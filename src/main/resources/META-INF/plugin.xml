@@ -12,10 +12,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <codeInsight.lineMarkerProvider
-                implementationClass="com.sk.director.ChildToParentNavigationMarkerProvider"
-                language="kotlin"/>
-        <codeInsight.lineMarkerProvider
-                implementationClass="com.sk.director.ParentToChildNavigationMarkerProvider"
+                implementationClass="com.sk.director.kotlin.KtChildToParentNavMarkerProvider"
                 language="kotlin"/>
     </extensions>
 
