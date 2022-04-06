@@ -31,12 +31,12 @@ class KtForeignKeyAnnotation(ktCallExpression: KtCallExpression) :
         return ktClass?.let(::KtEntityClass)
     }
 
-    override fun getParentColumnNames(): List<String>? {
+    override fun getChildColumnNames(): List<String>? {
         val childColumnsArgument = element.valueArgumentList?.findValueArgument(Parameters.ChildColumns)
         return childColumnsArgument?.getStrings()
     }
 
-    override fun getChildColumnNames(): List<String>? {
+    override fun getParentColumnNames(): List<String>? {
         val parentColumnsArgument = element.valueArgumentList?.findValueArgument(Parameters.ParentColumns)
         return parentColumnsArgument?.getStrings()
     }
