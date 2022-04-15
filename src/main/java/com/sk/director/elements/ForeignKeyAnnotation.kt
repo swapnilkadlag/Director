@@ -13,8 +13,17 @@ abstract class ForeignKeyAnnotation<T : PsiElement>(element: T) : Element<T>(ele
 
     abstract fun getChildColumnNames(): List<String>?
 
-    fun getData(): List<ForeignKey>? {
+    fun getParentData(): List<ForeignKey>? {
         val parentClass = getReferencedEntityClass() ?: return null
+        val childColumns = getChildColumnNames() ?: return null
+        val parentColumns = getParentColumnNames() ?: return null
+        return parentColumns.zip(childColumns) { p, c ->
+            ForeignKey(parentClass, p, c)
+        }
+    }
+
+    fun getChildData(): List<ForeignKey>? {
+        val parentClass = getParentEntityClass() ?: return null
         val childColumns = getChildColumnNames() ?: return null
         val parentColumns = getParentColumnNames() ?: return null
         return parentColumns.zip(childColumns) { p, c ->
