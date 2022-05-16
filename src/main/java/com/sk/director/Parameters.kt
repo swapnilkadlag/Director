@@ -5,4 +5,5 @@ object Parameters {
     const val ParentColumns = "parentColumns"
     const val ChildColumns = "childColumns"
     const val Entity = "entity"
+    const val Name = "name"
 }

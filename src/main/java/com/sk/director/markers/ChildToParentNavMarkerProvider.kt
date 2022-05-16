@@ -19,10 +19,12 @@ abstract class ChildToParentNavMarkerProvider : NavMarkerProvider() {
                 it.entityClass.getColumnParameters()?.firstOrNull { x -> x.getName() == it.parentColumnName }
             }?.map { it.element }
             targets?.ifNotEmpty {
-                NavigationGutterIconBuilder.create(Icons.Table)
-                    .setTargets(this)
-                    .setTooltipText("Navigate to parent table")
-                    .createLineMarkerInfo(columnParameter.element)
+                columnParameter.getNavigationElement()?.let {
+                    NavigationGutterIconBuilder.create(Icons.Table)
+                        .setTargets(this)
+                        .setTooltipText("Navigate to parent table")
+                        .createLineMarkerInfo(it)
+                }
             }
         }
     }
