@@ -22,6 +22,7 @@ intellij {
     plugins = ['android']
 }
 patchPluginXml {
+    sinceBuild = "203"
     changeNotes = """
       Add change notes here.<br>
       <em>most HTML tags may be used</em>"""
