@@ -10,8 +10,8 @@ import org.jetbrains.kotlin.idea.util.findAnnotation
 import org.jetbrains.kotlin.psi.KtProperty
 
 class KtColumnProperty(element: KtProperty) : ColumnParameter<KtProperty>(element) {
-    override fun getNavigationElement(): PsiElement {
-        return element.valOrVarKeyword
+    override fun getNavigationElement(): PsiElement? {
+        return element.identifyingElement
     }
 
     override fun getName(): String? {
