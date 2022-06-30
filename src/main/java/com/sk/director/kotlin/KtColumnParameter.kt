@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.psi.KtParameter
 
 class KtColumnParameter(element: KtParameter) : ColumnParameter<KtParameter>(element) {
     override fun getNavigationElement(): PsiElement? {
-        return element.valOrVarKeyword
+        return element.identifyingElement
     }
 
     override fun getName(): String? {
