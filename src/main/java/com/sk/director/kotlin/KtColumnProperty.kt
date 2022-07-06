@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement
 import com.sk.director.Annotations
 import com.sk.director.Parameters
 import com.sk.director.elements.ColumnParameter
-import com.sk.director.getString
 import org.jetbrains.kotlin.idea.util.findAnnotation
 import org.jetbrains.kotlin.psi.KtProperty
 

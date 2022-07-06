@@ -2,7 +2,6 @@ package com.sk.director.kotlin
 
 import com.intellij.psi.PsiElement
 import com.sk.director.elements.EntityClass
-import com.sk.director.isEntityClass
 import com.sk.director.markers.ChildToParentNavMarkerProvider
 import org.jetbrains.kotlin.psi.KtClass
 

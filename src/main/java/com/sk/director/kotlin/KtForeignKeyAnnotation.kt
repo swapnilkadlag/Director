@@ -4,8 +4,6 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.sk.director.Parameters
 import com.sk.director.elements.EntityClass
 import com.sk.director.elements.ForeignKeyAnnotation
-import com.sk.director.findValueArgument
-import com.sk.director.getStrings
 import org.jetbrains.kotlin.idea.references.KtSimpleNameReference
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.getChildOfType

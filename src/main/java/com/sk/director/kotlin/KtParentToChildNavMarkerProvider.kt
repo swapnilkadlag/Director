@@ -5,7 +5,6 @@ import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.PsiTreeUtil
 import com.sk.director.elements.EntityClass
 import com.sk.director.elements.ForeignKeyAnnotation
-import com.sk.director.isEntityClass
 import com.sk.director.markers.ParentToChildNavMarkerProvider
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClass
