@@ -1,6 +1,7 @@
 package com.sk.director.kotlin
 
 import com.android.tools.idea.kotlin.findValueArgument
+import com.intellij.psi.util.childrenOfType
 import com.sk.director.*
 import com.sk.director.elements.ColumnParameter
 import com.sk.director.elements.EntityClass
@@ -8,7 +9,6 @@ import com.sk.director.elements.ForeignKeyAnnotation
 import org.jetbrains.kotlin.idea.util.findAnnotation
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.getChildOfType
-import org.jetbrains.plugins.groovy.lang.psi.util.childrenOfType
 
 class KtEntityClass(element: KtClass) : EntityClass<KtClass>(element) {
 

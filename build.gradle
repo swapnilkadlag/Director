@@ -1,35 +1,41 @@
 plugins {
     id 'org.jetbrains.intellij' version '1.4.0'
-    id 'org.jetbrains.kotlin.jvm' version '1.6.10'
+    id 'org.jetbrains.kotlin.jvm' version '1.7.0'
     id 'java'
 }
 
 group 'org.sk'
-version '0.0.1'
+version '1.0.0'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compileOnly "org.jetbrains.kotlin:kotlin-compiler:1.6.10"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.6.10"
+    compileOnly 'org.jetbrains.kotlin:kotlin-compiler:1.7.0'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.7.0'
 }
 
-// See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = '2021.2.1'
+    version = '2022.1.3'
     plugins = ['android']
 }
+
 patchPluginXml {
     sinceBuild = "203"
-    changeNotes = """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+    changeNotes = "Initial release"
 }
+
+tasks {
+    compileKotlin {
+        kotlinOptions.jvmTarget = "11"
+    }
+}
+
 runIde {
     ideDir = file('C:\\Program Files\\Android\\Android Studio')
 }
+
 test {
     useJUnitPlatform()
 }

@@ -1,9 +1,11 @@
 <idea-plugin>
-    <id>org.sk.Director</id>
-    <name>TODO</name>
-    <vendor email="todo" url="todo">todo</vendor>
+    <id>org.sk.director</id>
+    <name>Director</name>
+    <vendor email="swapnil.kadlag.27@gmail.com" url="https://github.com/swapnilkadlag/Director">Swapnil Kadlag</vendor>
 
-    <description>todo....................................</description>
+    <description>The Director plugin for Android Studio helps you to easily navigate between Foreign Keys of Room
+        Entities
+    </description>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.lang</depends>
@@ -15,8 +17,8 @@
                 implementationClass="com.sk.director.kotlin.KtChildToParentNavMarkerProvider"
                 language="kotlin"/>
         <codeInsight.lineMarkerProvider
-            implementationClass="com.sk.director.kotlin.KtParentToChildNavMarkerProvider"
-            language="kotlin"/>
+                implementationClass="com.sk.director.kotlin.KtParentToChildNavMarkerProvider"
+                language="kotlin"/>
     </extensions>
 
 </idea-plugin>
