@@ -17,7 +17,7 @@ class KtColumnParameter(element: KtParameter) : ColumnParameter<KtParameter>(ele
         val columnInfoAnnotation = element.findAnnotation(Annotations.ColumnInfoFQName)
         return if (columnInfoAnnotation != null) {
             val nameArgument = columnInfoAnnotation.findValueArgument(Parameters.Name)
-            nameArgument?.stringTemplateExpression?.getString()
+            nameArgument?.stringTemplateExpression?.getString() ?: element.nameIdentifier?.text
         } else element.nameIdentifier?.text
     }
 }
