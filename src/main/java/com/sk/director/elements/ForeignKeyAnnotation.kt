@@ -4,7 +4,6 @@ import com.intellij.psi.PsiElement
 import com.sk.director.ForeignKey
 
 abstract class ForeignKeyAnnotation<T : PsiElement>(element: T) : Element<T>(element) {
-
     abstract fun getReferencedEntityClass(): EntityClass<*>?
 
     abstract fun getParentEntityClass(): EntityClass<*>?

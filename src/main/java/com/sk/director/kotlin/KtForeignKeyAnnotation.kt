@@ -11,7 +11,6 @@ import org.jetbrains.kotlin.utils.addToStdlib.firstIsInstanceOrNull
 
 class KtForeignKeyAnnotation(ktCallExpression: KtCallExpression) :
     ForeignKeyAnnotation<KtCallExpression>(ktCallExpression) {
-
     override fun getName(): String? {
         TODO("Not yet implemented")
     }

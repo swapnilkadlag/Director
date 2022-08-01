@@ -11,7 +11,6 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.getChildOfType
 
 class KtEntityClass(element: KtClass) : EntityClass<KtClass>(element) {
-
     override fun getColumnParameters(): List<ColumnParameter<*>> {
         val constructorParameters = element.primaryConstructorParameters
         val constructorColumns = constructorParameters.map(::KtColumnParameter)

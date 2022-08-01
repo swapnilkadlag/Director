@@ -7,7 +7,6 @@ import com.sk.director.elements.EntityClass
 import org.jetbrains.kotlin.utils.addToStdlib.ifNotEmpty
 
 abstract class ChildToParentNavMarkerProvider : NavMarkerProvider() {
-
     override fun getMarkers(entity: EntityClass<*>): List<RelatedItemLineMarkerInfo<*>>? {
         val columnParameters = entity.getColumnParameters()
         val foreignKeyAnnotations = entity.getForeignKeyAnnotations()

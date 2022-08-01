@@ -10,7 +10,6 @@ import com.sk.director.elements.ForeignKeyAnnotation
 import org.jetbrains.kotlin.utils.addToStdlib.ifNotEmpty
 
 abstract class ParentToChildNavMarkerProvider : NavMarkerProvider() {
-
     override fun getMarkers(entity: EntityClass<*>): List<RelatedItemLineMarkerInfo<*>>? {
         val columnParameters = entity.getColumnParameters()
         val foreignKeyAnnotations = getReferencedAnnotations(entity.element)
