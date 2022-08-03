@@ -1,12 +1,14 @@
+fun properties(key: String) = project.findProperty(key).toString()
+
 plugins {
+    id("java")
     id("org.jetbrains.intellij") version("1.4.0")
     id("org.jetbrains.kotlin.jvm") version("1.7.0")
     id("org.jetbrains.changelog") version("1.3.1")
-    id("java")
 }
 
-group = "org.sk"
-version = "1.0.0"
+group = properties("pluginGroup")
+version = properties("pluginVersion")
 
 repositories {
     mavenCentral()
@@ -18,8 +20,10 @@ dependencies {
 }
 
 intellij {
-    version.set("2022.1.3")
-    plugins.set(listOf("android"))
+    pluginName.set(properties("pluginName"))
+    version.set(properties("platformVersion"))
+    type.set(properties("platformType"))
+    plugins.set(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
 }
 
 tasks {
@@ -27,11 +31,11 @@ tasks {
         ideDir.set(file("C:\\Program Files\\Android\\Android Studio"))
     }
     patchPluginXml {
-        sinceBuild.set("203")
+        sinceBuild.set(properties("pluginSinceBuild"))
         changeNotes.set("Initial release")
     }
     compileKotlin {
-        kotlinOptions.jvmTarget = "11"
+        kotlinOptions.jvmTarget = properties("javaVersion")
     }
     test {
         useJUnitPlatform()
