@@ -22,7 +22,7 @@ abstract class ParentToChildNavMarkerProvider : NavMarkerProvider() {
             parentColumnParam?.getNavigationElement()?.let {
                 NavigationGutterIconBuilder.create(Icons.Key)
                     .setTargets(childColumnParams.mapNotNull { p -> p.getNavigationElement() })
-                    .setCellRenderer(ParentToChildMarkerCellRenderer())
+                    .setCellRenderer { ParentToChildMarkerCellRenderer() }
                     .setTooltipText("Navigate to foreign keys")
                     .createLineMarkerInfo(it)
             }
