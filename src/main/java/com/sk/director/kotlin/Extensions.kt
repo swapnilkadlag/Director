@@ -1,10 +1,10 @@
 package com.sk.director.kotlin
 
-import com.intellij.psi.util.childrenOfType
 import com.sk.director.Annotations
 import org.jetbrains.kotlin.idea.util.findAnnotation
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.getChildOfType
+import org.jetbrains.plugins.groovy.lang.psi.util.childrenOfType
 
 fun KtClass.isEntityClass(): Boolean {
     return this.findAnnotation(Annotations.EntityFQName) != null
